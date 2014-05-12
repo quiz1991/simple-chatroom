@@ -11,6 +11,8 @@ app.get("/", function(req, res){
 });
 
 var io = require('socket.io').listen(app.listen(port));
+var redis = require('redis')
+var redisClient = redis.createClient();
 
 io.sockets.on('connection', function(socket){
   socket.emit('message', { message: 'Welcome to the chatroom!' });
