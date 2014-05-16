@@ -11,21 +11,63 @@ app.get("/", function(req, res){
 });
 
 var io = require('socket.io').listen(app.listen(port));
-// var redis = require('redis')
-// var redisClient = redis.createClient();
+var redis = require('redis')
+var redisClient = redis.createClient();
 
-// var storeMessage = function(name, data){
-// 	var message = JSON.stringify({name: name, data: data});
-//  	redisClient.lpush("messages", message, function(err, response) {
-//    redisClient.ltrim("messages", 0, 10);
-// 	}); 
-// }
+var storeMessage = function(name, data){
+	var message = JSON.stringify({name: name, data: data});
+ 	redisClient.lpush("messages", message, function(err, response) {
+   redisClient.ltrim("messages", 0, 10);
+	}); 
+}
 
-io.sockets.on('connection', function(socket){
-  socket.emit('message', { message: 'Welcome to the chatroom!' });
-  socket.on('send', function(data){
-    io.sockets.emit('message', data);
+// io.sockets.on('connection', function(socket){
+// 	console.log('Client connected...');
+
+//   socket.emit('message', { message: 'Welcome to the chatroom!' });
+//   socket.on('send', function(data){
+//     io.sockets.emit('message', data);
+//   });
+// });
+io.sockets.on('connection', function(socket) {
+  console.log('Client connected...');
+
+  socket.on('join', function(name) {
+  	console.log('------' + name + ' is part of us now!------');
+  	socket.broadcast.emit("add chatter", name);
+  	console.log('------hahahaha------');
+  	redisClient.smembers('chatters', function(err, names) {
+	    names.forEach(function(name){
+	      socket.emit('add chatter', name);
+			});
+		}); 
+  	redisClient.sadd("chatters", name);
+
+  	redisClient.lrange("messages", 0, -1, function(err, messages){
+  		messages = messages.reverse();
+  		messages.forEach(function(message){
+  			message = JSON.parse(message);
+  			socket.emit("messages", message.name + ": " + message.data);
+  		});
+		});
+
+    socket.set('nickname', name);
+    socket.get('nickname', function(err, name){
+    	console.log('------nick name is ' + name + "------");
+    });
   });
-});
 
-console.log("listening on port 8080");
+  socket.on('messages', function(message) {
+    socket.get('nickname', function(err, name){
+    	storeMessage(name, message);
+    	socket.broadcast.emit("messages", name + ": " + message);
+    });
+	});
+
+  socket.on('disconnect', function(name){
+	  socket.get('nickname', function(err, name){
+	    socket.broadcast.emit("remove chatter", name);
+	    redisClient.srem("chatters", name);
+	  });
+	});
+});
