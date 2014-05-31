@@ -58,7 +58,7 @@ $(document).ready(function(){
 
   function sendMessage(){
     var message = field.val();
-    field.html("");
+    field.val("");
     socket.emit('messages', message);
   }
 });
