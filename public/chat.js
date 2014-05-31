@@ -4,33 +4,32 @@ $(document).ready(function(){
 
   socket.on('connect', function(data) {
     $('#status').html('Connected to chattr');
-    nickname = prompt("What is your nickname?");
+    var nickname = prompt("What is your nickname?");
     socket.emit('join', nickname);
   });
 
   var field = $("#field");
   var sendButton = $("#send");
   var content = $("#content");
-  var name = $("#name");
   var chatters = $("#chatters");
 
-  socket.on('add chatter', insertChatter);
-  var insertChatter = function(name) {
-    alert(' is added!');
-    // var chatter = $('<li>'+name+'</li>').data('name', name);
-    // chatters.append(chatter);
-  }
+  socket.on('add chatter', function(name) {
+    var chatter = $('<li>'+name+'</li>').data('name', name);
+    chatters.append(chatter);
+  });
 
-  socket.on('remove chatter', removeChatter);
-  var removeChatter = function(name) {
+  socket.on('remove chatter', function(name) {
     $('#chatters li[data-name=' + name + ']').remove();
-  }
+  });
 
-  socket.on('messages', insertMessage);
-  var insertMessage = function(data) {
+  socket.on('messages', function(data) {
     var message = '<li>' + data + '</li>';
     content.append(message);
-  }
+  });
+  // var insertMessage = function(data) {
+  //   var message = '<li>' + data + '</li>';
+  //   content.append(message);
+  // }
 
   // socket.on("message", function(data){
   //   if(data.message){
@@ -53,17 +52,13 @@ $(document).ready(function(){
     }
   });
 
-  sendButton.click(function(){
+  sendButton.click(function() {
     sendMessage();
   });
 
-  sendMessage = function(){
-    if(name.val() == ""){
-      alert("Please type your name!");
-    }else{
-      var text = field.val();
-      socket.emit('messages', message);
-      field.html("");
-    }
+  function sendMessage(){
+    var message = field.val();
+    field.html("");
+    socket.emit('messages', message);
   }
 });

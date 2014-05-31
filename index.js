@@ -33,9 +33,7 @@ io.sockets.on('connection', function(socket) {
   console.log('Client connected...');
 
   socket.on('join', function(name) {
-  	console.log('------' + name + ' is part of us now!------');
   	socket.broadcast.emit("add chatter", name);
-  	console.log('------hahahaha------');
   	redisClient.smembers('chatters', function(err, names) {
 	    names.forEach(function(name){
 	      socket.emit('add chatter', name);
@@ -52,12 +50,10 @@ io.sockets.on('connection', function(socket) {
 		});
 
     socket.set('nickname', name);
-    socket.get('nickname', function(err, name){
-    	console.log('------nick name is ' + name + "------");
-    });
   });
 
   socket.on('messages', function(message) {
+    console.log("a message received...");
     socket.get('nickname', function(err, name){
     	storeMessage(name, message);
     	socket.broadcast.emit("messages", name + ": " + message);
