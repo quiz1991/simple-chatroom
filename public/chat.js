@@ -1,10 +1,10 @@
 $(document).ready(function(){
-  var messages = [];
   var socket = io.connect('http://localhost:8080');
+  var nickname;
 
   socket.on('connect', function(data) {
     $('#status').html('Connected to chattr');
-    var nickname = prompt("What is your nickname?");
+    nickname = prompt("What is your nickname?");
     socket.emit('join', nickname);
   });
 
@@ -59,6 +59,7 @@ $(document).ready(function(){
   function sendMessage(){
     var message = field.val();
     field.val("");
+    content.append('<li>' + nickname + ": " + message + '</li>');
     socket.emit('messages', message);
   }
 });
