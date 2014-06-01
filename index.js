@@ -21,27 +21,44 @@ var storeMessage = function(name, data){
 	}); 
 }
 
+var checkNick = function(socket, name, callback) {
+  var existance = 0;
+  var newNick = name;
+  redisClient.smembers('chatters', function(err, names) {
+    names.forEach(function(name){
+      if(name === newNick) {
+        existance = 1;
+        socket.emit("existed nickname", name);
+      }
+    });
+    if(existance == 0)
+      callback(name);
+  });
+}
+
 io.sockets.on('connection', function(socket) {
   console.log('Client connected...');
 
   socket.on('join', function(name) {
-  	socket.broadcast.emit("add chatter", name);
-  	redisClient.smembers('chatters', function(err, names) {
-	    names.forEach(function(name){
-	      socket.emit('add chatter', name);
-			});
-		}); 
-  	redisClient.sadd("chatters", name);
+    checkNick(socket, name, function(name) {
+    	socket.broadcast.emit("add chatter", name);
+    	redisClient.smembers('chatters', function(err, names) {
+  	    names.forEach(function(name){
+  	      socket.emit('add chatter', name);
+  			});
+  		}); 
+    	redisClient.sadd("chatters", name);
 
-  	redisClient.lrange("messages", 0, -1, function(err, messages){
-  		messages = messages.reverse();
-  		messages.forEach(function(message){
-  			message = JSON.parse(message);
-  			socket.emit("messages", message.name + ": " + message.data);
+    	redisClient.lrange("messages", 0, -1, function(err, messages){
+    		messages = messages.reverse();
+    		messages.forEach(function(message){
+    			message = JSON.parse(message);
+    			socket.emit("messages", message.name + ": " + message.data);
+    		});
   		});
-		});
 
-    socket.set('nickname', name);
+      socket.set('nickname', name);
+    });
   });
 
   socket.on('messages', function(message) {

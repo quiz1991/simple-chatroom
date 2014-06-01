@@ -19,6 +19,11 @@ $(document).ready(function(){
     chatters.append(chatter);
   });
 
+  socket.on('existed nickname', function(name) {
+    nickname = prompt("Nick name exists, please choose another one: ");
+    socket.emit('join', nickname);
+  });
+
   socket.on('remove chatter', function(name) {
     $('#chatters li[data-name=' + name + ']').remove();
   });
