@@ -1,15 +1,18 @@
+doctype html
 html
 	head
 		title="Real time web chat"
+		link(rel='stylesheet', href='/style.css', type='text/css')
 		script(type='text/javascript', src="http://code.jquery.com/jquery-1.11.0.min.js")
 		script(src='/socket.io/socket.io.js')
 		script(src='/chat.js')
 	body
-		#chatters(style='float: left; width: 150px; height: 300px; border: solid 1px #999; padding: 5px; margin: 0 3px 0 0; overflow-y: scroll;')
-		#content(style='width: 500px; height: 300px; border: solid 1px #999; padding: 5px; overflow-y: scroll;')
+		#chatters
+		#right-container
 			#status
-		.controls(style='margin: 5px 0 0 0;')
-			div(style='width: 65px; float: left')
+			#content
+		#controlls
+			#controlls-messageString
 				|Message:
-			input#field(style='width:350px;  margin: 0 5px 0 0;')
-			input#send(type='button', value='send')
+			input#controlls-field
+			input#controlls-send(type='button', value='send')

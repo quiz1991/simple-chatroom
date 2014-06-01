@@ -3,15 +3,15 @@ $(document).ready(function(){
   var nickname;
 
   socket.on('connect', function(data) {
-    $('#status').html('Connected to chattr');
+    $('#status').html('Welcome to the chatroom!!!');
     nickname = prompt("What is your nickname?");
     socket.emit('join', nickname);
   });
 
-  var field = $("#field");
-  var sendButton = $("#send");
-  var content = $("#content");
   var chatters = $("#chatters");
+  var content = $("#content");
+  var field = $("#controlls-field");
+  var sendButton = $("#controlls-send");
 
   socket.on('add chatter', function(name) {
     var chatter = $('<li>'+name+'</li>').attr('data-name', name);
@@ -19,7 +19,7 @@ $(document).ready(function(){
   });
 
   socket.on('existed nickname', function(name) {
-    nickname = prompt("Nick name exists, please choose another one: ");
+    nickname = prompt(name + " is already being used, please choose another one: ");
     socket.emit('join', nickname);
   });
 
@@ -30,10 +30,13 @@ $(document).ready(function(){
   socket.on('messages', function(data) {
     var message = '<li>' + data + '</li>';
     content.append(message);
+
+    // set the scroll bar to the newest message
     content.scrollTop(content[0].scrollHeight);
   });
 
   field.keyup(function(e) {
+    // send message if chatter press the "enter" button
     if(e.keyCode == 13) {
       sendMessage();
     }
@@ -45,6 +48,8 @@ $(document).ready(function(){
 
   function sendMessage(){
     var message = field.val();
+
+    // clean the message input area after sent
     field.val("");
     content.append('<li>' + nickname + ": " + message + '</li>');
     content.scrollTop(content[0].scrollHeight);
