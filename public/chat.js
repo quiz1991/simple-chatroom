@@ -14,7 +14,6 @@ $(document).ready(function(){
   var chatters = $("#chatters");
 
   socket.on('add chatter', function(name) {
-    // var chatter = $('<li>'+name+'</li>').data('name', name);
     var chatter = $('<li>'+name+'</li>').attr('data-name', name);
     chatters.append(chatter);
   });
@@ -31,6 +30,7 @@ $(document).ready(function(){
   socket.on('messages', function(data) {
     var message = '<li>' + data + '</li>';
     content.append(message);
+    content.scrollTop(content[0].scrollHeight);
   });
 
   field.keyup(function(e) {
@@ -47,6 +47,7 @@ $(document).ready(function(){
     var message = field.val();
     field.val("");
     content.append('<li>' + nickname + ": " + message + '</li>');
+    content.scrollTop(content[0].scrollHeight);
     socket.emit('messages', message);
   }
 });
