@@ -21,14 +21,6 @@ var storeMessage = function(name, data){
 	}); 
 }
 
-// io.sockets.on('connection', function(socket){
-// 	console.log('Client connected...');
-
-//   socket.emit('message', { message: 'Welcome to the chatroom!' });
-//   socket.on('send', function(data){
-//     io.sockets.emit('message', data);
-//   });
-// });
 io.sockets.on('connection', function(socket) {
   console.log('Client connected...');
 
@@ -53,14 +45,13 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('messages', function(message) {
-    console.log("a message received...");
     socket.get('nickname', function(err, name){
     	storeMessage(name, message);
     	socket.broadcast.emit("messages", name + ": " + message);
     });
 	});
 
-  socket.on('disconnect', function(name){
+  socket.on('disconnect', function(){
 	  socket.get('nickname', function(err, name){
 	    socket.broadcast.emit("remove chatter", name);
 	    redisClient.srem("chatters", name);
