@@ -27,9 +27,11 @@ $(document).ready(function(){
     $('#chatters li[data-name=' + name + ']').remove();
   });
 
-  socket.on('messages', function(data) {
-    var message = '<li>' + data + '</li>';
-    content.append(message);
+  socket.on('messages', function(message) {
+    if(message.name === nickname)
+      content.append("<li class='floatRight message'>" + message.data + "</li>");
+    else
+      content.append("<li class='floatLeft'>" + message.name + ": " + "<div class='left-triangle'></div><div class='message'>" + message.data + "</div>" + "</li>");
 
     // set the scroll bar to the newest message
     content.scrollTop(content[0].scrollHeight);
@@ -51,7 +53,7 @@ $(document).ready(function(){
 
     // clean the message input area after sent
     field.val("");
-    content.append('<li>' + nickname + ": " + message + '</li>');
+    content.append("<li class='floatRight message'>" + message + "</li>");
     content.scrollTop(content[0].scrollHeight);
     socket.emit('messages', message);
   }

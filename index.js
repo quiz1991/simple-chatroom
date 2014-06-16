@@ -66,7 +66,7 @@ io.sockets.on('connection', function(socket) {
     		messages = messages.reverse();
     		messages.forEach(function(message){
     			message = JSON.parse(message);
-    			socket.emit("messages", message.name + ": " + message.data);
+    			socket.emit("messages", message);
     		});
   		});
 
@@ -81,7 +81,7 @@ io.sockets.on('connection', function(socket) {
     	storeMessage(name, message);
 
       // boardcast the message to chatters other than the sender
-    	socket.broadcast.emit("messages", name + ": " + message);
+      socket.broadcast.emit("messages", {name: name, data: message});
     });
 	});
 

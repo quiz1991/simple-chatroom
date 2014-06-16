@@ -2,17 +2,16 @@ doctype html
 html
 	head
 		title="Real time web chat"
-		link(rel='stylesheet', href='/style.css', type='text/css')
+		link(rel='stylesheet', href='/reset.css', type='text/css')
+		link(rel='stylesheet', href='/styles.css', type='text/css')
+	body
+		#status
+		#chatters
+		ul#content
+		#controlls
+			input#controlls-field
+			button#controlls-send send
+		#test
 		script(type='text/javascript', src="http://code.jquery.com/jquery-1.11.0.min.js")
 		script(src='/socket.io/socket.io.js')
 		script(src='/chat.js')
-	body
-		#chatters
-		#right-container
-			#status
-			#content
-		#controlls
-			#controlls-messageString
-				|Message:
-			input#controlls-field
-			input#controlls-send(type='button', value='send')
