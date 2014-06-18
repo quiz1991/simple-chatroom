@@ -29,9 +29,9 @@ $(document).ready(function(){
 
   socket.on('messages', function(message) {
     if(message.name === nickname)
-      content.append("<li class='floatRight'><div class='message'>" + message.data + "</div>" + "<div class='right-triangle'></div>" + "</li>");
+      content.append("<li class='floatRight'><div class='right-triangle'></div><div class='message'>" + message.data + "</div>" + "</li>");
     else
-      content.append("<li><div class='left-triangle'></div><div class='message'>" + message.data + "</div>" + "</li>");
+      content.append("<li><div class='messageOwner'>" + message.name + "</div><div class='left-triangle'></div><div class='message'>" + message.data + "</div>" + "</li>");
 
     // set the scroll bar to the newest message
     content.scrollTop(content[0].scrollHeight);
@@ -53,7 +53,7 @@ $(document).ready(function(){
 
     // clean the message input area after sent
     field.val("");
-    content.append("<li class='floatRight'><div class='message'>" + message + "</div>" + "<div class='right-triangle'></div>" + "</li>");
+    content.append("<li class='floatRight'><div class='right-triangle'></div><div class='message'>" + message + "</div>" + "</li>");
     content.scrollTop(content[0].scrollHeight);
     socket.emit('messages', message);
   }

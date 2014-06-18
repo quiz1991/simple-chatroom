@@ -6,9 +6,13 @@ body {
 
 #content li {
 	display: block;
-	position: relative;
 	padding-bottom: 50px;
-	clear: both;
+	clear: right;
+}
+
+.messageOwner {
+	float: left;
+	margin-right: 10px;
 }
 
 #status {
